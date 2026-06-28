@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(*)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "WebFetch(*)",
+      "WebSearch(*)"
+    ],
+    "deny": [
+      "Bash(pm2 restart*)",
+      "Bash(pm2 reload*)",
+      "Bash(pm2 stop*)",
+      "Bash(pm2 start*)",
+      "Bash(pm2 delete*)",
+      "Bash(npm run build*)",
+      "Bash(node backend/src/index.js*)",
+      "Bash(node src/index.js*)",
+      "Bash(*deploy.sh*)"
+    ]
+  }
+}

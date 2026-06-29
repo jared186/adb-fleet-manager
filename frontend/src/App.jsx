@@ -1,7 +1,7 @@
+import Dashboard from './pages/Dashboard';
+
 function App() {
-  return (
-    <div>Fleet Dashboard</div>
-  )
+  return <Dashboard />;
 }
 
-export default App
+export default App;

@@ -3,6 +3,7 @@ const { PrismaClient } = require('@prisma/client');
 const { getDeviceInfo } = require('./deviceInfo');
 const { getAndSyncUsers } = require('./users');
 const socket = require('../socket');
+const screenshot = require('./screenshot');
 
 const prisma = new PrismaClient();
 const client = adb.createClient();
@@ -27,6 +28,7 @@ async function handleAdd(device) {
       const info = await getDeviceInfo(client, device.id);
       await prisma.device.update({ where: { id: record.id }, data: info });
       await getAndSyncUsers(client, device.id, record.id);
+      screenshot.addSerial(device.id);
     }
 
     const io = socket.getIO();
@@ -43,6 +45,8 @@ async function handleRemove(device) {
       data: { status: 'OFFLINE' },
     });
 
+    screenshot.removeSerial(device.id);
+
     const io = socket.getIO();
     if (io) io.emit('device:disconnected', { serialNumber: device.id });
   } catch (err) {
@@ -57,6 +61,9 @@ async function handleChange(device) {
       where: { serialNumber: device.id },
       data: { status, lastSeen: new Date() },
     });
+
+    if (status === 'ONLINE') screenshot.addSerial(device.id);
+    else screenshot.removeSerial(device.id);
 
     const io = socket.getIO();
     if (io) io.emit('device:updated', { serialNumber: device.id, status });
